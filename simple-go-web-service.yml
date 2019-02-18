@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  simple-go-web
+spec:
+  selector:
+    app:  simple-go-web
+  type:  NodePort
+  ports:
+  - name:  simple-go-web-port
+    port:  9090
+    targetPort:  9090

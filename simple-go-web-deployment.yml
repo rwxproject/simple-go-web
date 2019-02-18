@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-go-web
+  labels:
+    name: simple-go-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: simple-go-web
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: simple-go-web
+    spec:
+      containers:
+      - image:  rwxproject/simple-go-web:latest
+        name: simple-go-web
+        resources:
+          requests:
+            cpu: "64m"
+            memory: "125M"
+          limits:
+            cpu: "128m"
+            memory: "250M"
+        livenessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 9090
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 9090
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        env:
+        - name:  PORT
+          value:  "9090"      
+        ports:
+        - containerPort:  9090
+          name:  simple-go-web
+      restartPolicy: Always
